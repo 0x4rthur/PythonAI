@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Um Oi para Mafê</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos personalizados para complementar o Tailwind CSS */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        #app-container {
+            position: relative;
+            min-height: 350px; /* Garante altura mínima para os elementos absolutos */
+        }
+        .main-container {
+            /* Alterado para uma transição suave de opacidade */
+            transition: opacity 0.5s ease-in-out;
+        }
+        .main-container.hidden-step {
+            /* Removido o transform para focar na opacidade */
+            opacity: 0;
+            pointer-events: none;
+        }
+        .btn {
+            transition: all 0.2s ease-in-out;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        .btn-primary {
+            background-color: #007AFF; /* Azul Apple */
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #E5E5EA; /* Cinza claro Apple */
+            color: #007AFF;
+        }
+        .negative-btn {
+            /* Animação mais exagerada e "elástica" */
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        #toast {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(-100%) translateX(-50%);
+            opacity: 0;
+        }
+        #toast.show {
+            transform: translateY(0) translateX(-50%);
+            opacity: 1;
+        }
+        #final-success-container svg {
+             width: 80px;
+             height: 80px;
+             color: #34C759; /* Verde sucesso Apple */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 overflow-hidden">
+
+    <!-- Container Principal -->
+    <div id="app-container" class="w-full max-w-sm mx-auto bg-white rounded-2xl shadow-xl p-8 text-center">
+
+        <!-- Passo 1: "Oi, Mafê!" -->
+        <div id="step1" class="main-container absolute">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight">Ei, Mafê!</h1>
+            <p class="text-xl md:text-2xl font-medium text-gray-600 mt-2">Tudo bem, linda?</p>
+            <div class="mt-8 space-y-4">
+                <button onclick="showStep(2)" class="btn btn-primary w-full">Sim! E você?</button>
+                <button class="btn btn-secondary w-full negative-btn">Não, sai fora...</button>
+            </div>
+        </div>
+
+        <!-- Passo 2: "Posso te perguntar?" -->
+        <div id="step2" class="main-container hidden-step absolute">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight">Tô bem também!</h1>
+            <p class="text-xl md:text-2xl font-medium text-gray-600 mt-2">Posso te perguntar uma coisa? 😅</p>
+            <div class="mt-8 space-y-4">
+                <button onclick="showStep(3)" class="btn btn-primary w-full">Claro!</button>
+                <button class="btn btn-secondary w-full negative-btn">Não</button>
+            </div>
+        </div>
+
+        <!-- Passo 3: "Quer sair comigo?" -->
+        <div id="step3" class="main-container hidden-step absolute">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight">Quer sair comigo? ❤️</h1>
+            <div class="mt-8 space-y-4">
+                <button onclick="showStep(4)" class="btn btn-primary w-full">Quero!</button>
+                <button class="btn btn-secondary w-full negative-btn">Não, obrigada...</button>
+            </div>
+        </div>
+
+        <!-- Passo 4: Pedir Telefone -->
+        <div id="step4" class="main-container hidden-step absolute">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Uhuul! 🫶🏻</h1>
+            <p class="text-lg md:text-xl font-medium text-gray-600 mt-2">Ah... Me passa seu número de novo? Troquei de celular e perdi seu contato... 😅😬</p>
+            <form id="phone-form" class="mt-6 w-full text-left">
+                 <input type="tel" id="phone-input" name="telefone" class="w-full p-3 rounded-lg border border-gray-300 text-center text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="(XX) XXXXX-XXXX" required>
+                 <button type="submit" id="submit-btn" class="btn btn-primary w-full mt-4">Enviar Contato</button>
+            </form>
+        </div>
+
+        <!-- Tela de Sucesso Final -->
+        <div id="final-success-container" class="main-container hidden-step absolute flex flex-col items-center">
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" /></svg>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mt-4">Foi! 🫶🏻</h1>
+            <p class="text-lg md:text-xl font-medium text-gray-600 mt-2">Valeu, linda! Já te chamo! ❤️😉</p>
+        </div>
+
+    </div>
+
+    <!-- Toast de "Resposta Inválida" (Agora centralizado no topo) -->
+    <div id="toast" class="fixed top-5 left-1/2 bg-red-500 text-white py-2 px-4 rounded-lg shadow-lg z-50">
+        Resposta inválida!
+    </div>
+
+    <script>
+        const steps = [
+            document.getElementById('step1'),
+            document.getElementById('step2'),
+            document.getElementById('step3'),
+            document.getElementById('step4'),
+            document.getElementById('final-success-container')
+        ];
+        const appContainer = document.getElementById('app-container');
+
+        function showStep(stepIndex) {
+            appContainer.classList.remove('items-start');
+            steps.forEach((step, index) => {
+                const isCurrent = index === (stepIndex - 1);
+                // Posiciona o container do passo atual no centro do card
+                if (step) {
+                    step.classList.toggle('hidden-step', !isCurrent);
+                    if (isCurrent) {
+                        // Aplica o estilo para centralizar o passo atual
+                        step.style.top = '50%';
+                        step.style.left = '50%';
+                        step.style.transform = 'translate(-50%, -50%)';
+                        step.style.width = 'calc(100% - 4rem)';
+                    }
+                }
+            });
+        }
+        
+        // Lógica para os botões negativos
+        const negativeButtons = document.querySelectorAll('.negative-btn');
+        negativeButtons.forEach(button => {
+            button.dataset.jumpCount = 0;
+            button.addEventListener('mouseover', fleeFromMouse);
+            button.addEventListener('click', fleeFromMouse);
+        });
+
+        function fleeFromMouse(event) {
+            const button = event.target;
+            const container = appContainer;
+            
+            if (button.style.position !== 'absolute') {
+                const rect = button.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+                button.style.position = 'absolute';
+                button.style.width = `${rect.width}px`; 
+                button.style.top = `${rect.top - containerRect.top}px`;
+                button.style.left = `${rect.left - containerRect.left}px`;
+            }
+            
+            let jumpCount = parseInt(button.dataset.jumpCount) + 1;
+            button.dataset.jumpCount = jumpCount;
+
+            const padding = 16;
+            const maxX = container.clientWidth - button.offsetWidth - padding;
+            const maxY = container.clientHeight - button.offsetHeight - padding;
+            const randomX = Math.random() * maxX + (padding / 2);
+            const randomY = Math.random() * maxY + (padding / 2);
+
+            button.style.left = `${randomX}px`;
+            button.style.top = `${randomY}px`;
+            // Adiciona uma rotação aleatória para mais exagero
+            button.style.transform = `rotate(${(Math.random() - 0.5) * 30}deg)`;
+
+            
+            showToast();
+            
+            if (jumpCount >= 3) {
+                setTimeout(() => {
+                    button.style.opacity = '0';
+                    button.style.pointerEvents = 'none';
+                }, 300);
+            }
+        }
+
+        // Lógica para o toast de aviso
+        const toast = document.getElementById('toast');
+        let toastTimeout;
+        function showToast(message = 'Resposta inválida!', color = 'bg-red-500') {
+            clearTimeout(toastTimeout);
+            toast.innerText = message;
+            // Garante que as classes de posicionamento e cor sejam aplicadas corretamente
+            toast.className = `fixed top-7 left-1/2 text-white py-2 px-4 rounded-lg shadow-lg z-50 ${color} show`;
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // Lógica do Formulário com Formspree
+        const phoneForm = document.getElementById('phone-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        phoneForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            // IMPORTANTE: Substitua pelo seu URL do Formspree
+            const formspreeURL = 'https://formspree.io/f/mrbkqeed';
+            
+            if (formspreeURL.includes('YOUR_UNIQUE_ID')) {
+                showToast('Erro: O desenvolvedor precisa configurar o URL.', 'bg-yellow-500');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Enviando...';
+
+            const formData = new FormData(phoneForm);
+            
+            try {
+                const response = await fetch(formspreeURL, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    console.log("ELA ACEITOU E ENVIOU O CONTATO!");
+                    showStep(5); // Mostra a tela de sucesso final
+                } else {
+                    throw new Error('Falha ao enviar o formulário');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Ocorreu um erro. Tente novamente.', 'bg-red-500');
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Enviar Contato';
+            }
+        });
+        
+        // Inicia mostrando o primeiro passo
+        showStep(1);
+
+    </script>
+</body>
+</html>
