@@ -80,13 +80,13 @@
         <!-- Passo 1: "Oi, Mafê!" -->
         <div id="step1" class="main-container absolute">
             <!-- Ícone de Coração -->
-            <svg class="w-1 h-1 mx-auto text-red-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <svg class="w-16 h-16 mx-auto text-red-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
             </svg>
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight">Ei, Mafê!</h1>
             <p class="text-xl md:text-2xl font-medium text-gray-600 mt-2">Tudo bem, linda?</p>
             <!-- GIF Adicionado -->
-            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXRtdHgyc3c5MGI2cXRqaXM3eGVldnRueHR2OXp3bmxsYmNldGVqMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUA7b0XF4ysv62b7JS/giphy.gif" alt="Ursinho mandando beijo" class="w-1 h-1 mx-auto my-4 rounded-lg">
+            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXRtdHgyc3c5MGI2cXRqaXM3eGVldnRueHR2OXp3bmxsYmNldGVqMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUA7b0XF4ysv62b7JS/giphy.gif" alt="Ursinho mandando beijo" class="w-48 h-48 mx-auto my-4 rounded-lg">
             <div class="mt-8 space-y-4">
                 <button onclick="showStep(2)" class="btn btn-primary w-full">Sim! E você?</button>
                 <button class="btn btn-secondary w-full negative-btn">Não, sai fora...</button>
@@ -126,7 +126,13 @@
         <div id="final-success-container" class="main-container hidden-step absolute flex flex-col items-center">
              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" /></svg>
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mt-4">Foi! 🫶🏻</h1>
-            <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2s5Zjc2eGc2MHlrdm1kdHQzdXVhNHE4cmI5NDV2djF4bDB3OWozOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MyZHZu6pDak6d6k0HS/giphy.gif" alt="Arthur e Mafê" class="w-40 h-40 rounded-lg object-cover mx-auto my-4 shadow-lg">
+            <!-- Container para as imagens lado a lado -->
+            <div class="flex items-center justify-center space-x-4 my-4">
+                 <!-- GIF existente -->
+                 <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2s5Zjc2eGc2MHlrdm1kdHQzdXVhNHE4cmI5NDV2djF4bDB3OWozOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MyZHZu6pDak6d6k0HS/giphy.gif" alt="Arthur e Mafê" class="w-32 h-32 rounded-lg object-cover shadow-lg">
+                 <!-- Nova imagem adicionada -->
+                 <img src="https://i.postimg.cc/34g20Ffh/imagem-casal.jpg" alt="Foto do Casal" class="w-32 h-32 rounded-lg object-cover shadow-lg" onerror="this.onerror=null;this.src='https://placehold.co/128x128/ccc/ffffff?text=Foto';">
+            </div>
             <p class="text-lg md:text-xl font-medium text-gray-600 mt-2">Valeu, linda! Já te chamo! ❤️😉</p>
         </div>
 
@@ -182,7 +188,7 @@
                 const rect = button.getBoundingClientRect();
                 const containerRect = container.getBoundingClientRect();
                 button.style.position = 'absolute';
-                button.style.width = `${rect.width}px`; 
+                button.style.width = `${rect.width}px`;
                 button.style.top = `${rect.top - containerRect.top}px`;
                 button.style.left = `${rect.left - containerRect.left}px`;
             }
