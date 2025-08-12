@@ -1,0 +1,11 @@
+id_cliente,idade,categoria,renda,total_compras,mes
+101,35,Prata,4500,870,Jan
+102,50,Ouro,11000,2900,Jan
+103,27,Bronze,3000,150,Jan
+104,44,Prata,5200,1100,Jan
+105,60,Ouro,13000,3100,Jan
+106,29,Bronze,2800,200,Jan
+107,38,Prata,4900,980,Jan
+108,52,Ouro,12500,2950,Jan
+109,47,Bronze,3200,230,Jan
+110,33,Prata,4600,875,Jan
