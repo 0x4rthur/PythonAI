@@ -1,109 +1,251 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Simples</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px 30px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        h1 {
-            margin-bottom: 20px;
-        }
-        input {
-            width: 80px;
-            padding: 8px;
-            margin: 5px;
-            border: none;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 1.2em;
-        }
-        select {
-            padding: 8px;
-            margin: 5px;
-            border-radius: 8px;
-            font-size: 1em;
-        }
-        button {
-            padding: 10px 20px;
-            margin-top: 15px;
-            background: #ff9800;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #e68900;
-        }
-        .resultado {
-            margin-top: 15px;
-            font-size: 1.4em;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Calculadora Simples</h1>
-        <input type="number" id="num1" placeholder="Número 1">
-        <select id="operacao">
-            <option value="+">+</option>
-            <option value="-">−</option>
-            <option value="*">×</option>
-            <option value="/">÷</option>
-        </select>
-        <input type="number" id="num2" placeholder="Número 2">
-        <br>
-        <button onclick="calcular()">Calcular</button>
-        <div class="resultado" id="resultado"></div>
-    </div>
-
-    <script>
-        function calcular() {
-            const num1 = parseFloat(document.getElementById("num1").value);
-            const num2 = parseFloat(document.getElementById("num2").value);
-            const operacao = document.getElementById("operacao").value;
-            let resultado;
-
-            if (isNaN(num1) || isNaN(num2)) {
-                resultado = "Por favor, insira dois números válidos.";
-            } else {
-                switch (operacao) {
-                    case '+': resultado = num1 + num2; break;
-                    case '-': resultado = num1 - num2; break;
-                    case '*': resultado = num1 * num2; break;
-                    case '/':
-                        if (num2 === 0) {
-                            resultado = "Não é possível dividir por zero.";
-                        } else {
-                            resultado = num1 / num2;
-                        }
-                        break;
-                }
-            }
-            document.getElementById("resultado").textContent = `Resultado: ${resultado}`;
-        }
-    </script>
-</body>
-</html>
+diff --git a/Test/index b/Test/index
+index 9fe7acd25d2a04d378a737c4970d4de2a4e52432..0d75edac1ea4b0270fbe583e7fa79fd45beac336 100644
+--- a/Test/index
++++ b/Test/index
+@@ -1,109 +1,152 @@
+ <!DOCTYPE html>
+ <html lang="pt-BR">
+-<head>
+-    <meta charset="UTF-8">
+-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
++  <head>
++    <meta charset="UTF-8" />
++    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <title>Calculadora Simples</title>
+     <style>
+-        body {
+-            font-family: Arial, sans-serif;
+-            background: linear-gradient(135deg, #6a11cb, #2575fc);
+-            color: #fff;
+-            margin: 0;
+-            padding: 0;
+-            display: flex;
+-            justify-content: center;
+-            align-items: center;
+-            height: 100vh;
++      body {
++        font-family:
++          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
++        background: linear-gradient(135deg, #f0f2f8, #d9e1ec);
++        color: #000;
++        margin: 0;
++        padding: 0;
++        display: flex;
++        justify-content: center;
++        align-items: center;
++        height: 100vh;
++      }
++      .container {
++        background: rgba(255, 255, 255, 0.25);
++        border-radius: 20px;
++        border: 1px solid rgba(255, 255, 255, 0.4);
++        backdrop-filter: saturate(180%) blur(20px);
++        -webkit-backdrop-filter: saturate(180%) blur(20px);
++        padding: 30px 40px;
++        text-align: center;
++        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
++        animation: fadeIn 0.8s ease forwards;
++      }
++      h1 {
++        margin-bottom: 20px;
++      }
++      input,
++      select {
++        background: rgba(255, 255, 255, 0.6);
++        border: 1px solid rgba(0, 0, 0, 0.1);
++        border-radius: 12px;
++        padding: 10px;
++        margin: 5px;
++        font-size: 1.1em;
++        text-align: center;
++        width: 100px;
++        color: #000;
++        transition:
++          box-shadow 0.3s ease,
++          transform 0.2s ease;
++      }
++      input:focus,
++      select:focus {
++        outline: none;
++        box-shadow: 0 0 8px rgba(31, 38, 135, 0.3);
++        transform: translateY(-2px);
++      }
++      button {
++        padding: 12px 24px;
++        margin-top: 20px;
++        background: rgba(255, 255, 255, 0.25);
++        color: #000;
++        border: 1px solid rgba(255, 255, 255, 0.4);
++        border-radius: 12px;
++        font-size: 1em;
++        cursor: pointer;
++        transition:
++          background 0.3s ease,
++          transform 0.2s ease;
++        backdrop-filter: saturate(180%) blur(20px);
++        -webkit-backdrop-filter: saturate(180%) blur(20px);
++      }
++      button:hover {
++        background: rgba(255, 255, 255, 0.4);
++        transform: translateY(-2px);
++      }
++      button:active {
++        transform: translateY(0);
++      }
++      .resultado {
++        margin-top: 15px;
++        font-size: 1.4em;
++        font-weight: bold;
++      }
++      @keyframes fadeIn {
++        from {
++          opacity: 0;
++          transform: translateY(20px);
+         }
+-        .container {
+-            background: rgba(255, 255, 255, 0.1);
+-            padding: 20px 30px;
+-            border-radius: 12px;
+-            backdrop-filter: blur(10px);
+-            text-align: center;
+-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
++        to {
++          opacity: 1;
++          transform: translateY(0);
+         }
+-        h1 {
+-            margin-bottom: 20px;
+-        }
+-        input {
+-            width: 80px;
+-            padding: 8px;
+-            margin: 5px;
+-            border: none;
+-            border-radius: 8px;
+-            text-align: center;
+-            font-size: 1.2em;
+-        }
+-        select {
+-            padding: 8px;
+-            margin: 5px;
+-            border-radius: 8px;
+-            font-size: 1em;
+-        }
+-        button {
+-            padding: 10px 20px;
+-            margin-top: 15px;
+-            background: #ff9800;
+-            color: #fff;
+-            border: none;
+-            border-radius: 8px;
+-            font-size: 1em;
+-            cursor: pointer;
+-        }
+-        button:hover {
+-            background: #e68900;
+-        }
+-        .resultado {
+-            margin-top: 15px;
+-            font-size: 1.4em;
+-            font-weight: bold;
++      }
++      @media (prefers-reduced-motion: reduce) {
++        *,
++        *::before,
++        *::after {
++          animation: none !important;
++          transition: none !important;
+         }
++      }
+     </style>
+-</head>
+-<body>
++  </head>
++  <body>
+     <div class="container">
+-        <h1>Calculadora Simples</h1>
+-        <input type="number" id="num1" placeholder="Número 1">
+-        <select id="operacao">
+-            <option value="+">+</option>
+-            <option value="-">−</option>
+-            <option value="*">×</option>
+-            <option value="/">÷</option>
+-        </select>
+-        <input type="number" id="num2" placeholder="Número 2">
+-        <br>
+-        <button onclick="calcular()">Calcular</button>
+-        <div class="resultado" id="resultado"></div>
++      <h1>Calculadora Simples</h1>
++      <input type="number" id="num1" placeholder="Número 1" />
++      <select id="operacao">
++        <option value="+">+</option>
++        <option value="-">−</option>
++        <option value="*">×</option>
++        <option value="/">÷</option>
++      </select>
++      <input type="number" id="num2" placeholder="Número 2" />
++      <br />
++      <button onclick="calcular()">Calcular</button>
++      <div class="resultado" id="resultado"></div>
+     </div>
  
+     <script>
+-        function calcular() {
+-            const num1 = parseFloat(document.getElementById("num1").value);
+-            const num2 = parseFloat(document.getElementById("num2").value);
+-            const operacao = document.getElementById("operacao").value;
+-            let resultado;
++      function calcular() {
++        const num1 = parseFloat(document.getElementById("num1").value);
++        const num2 = parseFloat(document.getElementById("num2").value);
++        const operacao = document.getElementById("operacao").value;
++        let resultado;
+ 
+-            if (isNaN(num1) || isNaN(num2)) {
+-                resultado = "Por favor, insira dois números válidos.";
+-            } else {
+-                switch (operacao) {
+-                    case '+': resultado = num1 + num2; break;
+-                    case '-': resultado = num1 - num2; break;
+-                    case '*': resultado = num1 * num2; break;
+-                    case '/':
+-                        if (num2 === 0) {
+-                            resultado = "Não é possível dividir por zero.";
+-                        } else {
+-                            resultado = num1 / num2;
+-                        }
+-                        break;
+-                }
+-            }
+-            document.getElementById("resultado").textContent = `Resultado: ${resultado}`;
++        if (isNaN(num1) || isNaN(num2)) {
++          resultado = "Por favor, insira dois números válidos.";
++        } else {
++          switch (operacao) {
++            case "+":
++              resultado = num1 + num2;
++              break;
++            case "-":
++              resultado = num1 - num2;
++              break;
++            case "*":
++              resultado = num1 * num2;
++              break;
++            case "/":
++              if (num2 === 0) {
++                resultado = "Não é possível dividir por zero.";
++              } else {
++                resultado = num1 / num2;
++              }
++              break;
++          }
+         }
++        document.getElementById("resultado").textContent =
++          `Resultado: ${resultado}`;
++      }
+     </script>
+-</body>
++  </body>
+ </html>
+- 
+\ No newline at end of file
