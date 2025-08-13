@@ -1,0 +1,213 @@
+import React, { useState, useEffect } from 'react';
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  RadialBarChart, RadialBar, Legend
+} from 'recharts';
+
+// Conteúdo da sua planilha CSV. Para atualizar, basta editar esta string.
+const csvData = `Data,BTG,Inter,Itaú,Mercado Pago,Nubank,Apartamento,Faculdade,Total
+06/2025,,,"R$ 897,74",,"R$ 788,73","R$ 1.000,00","R$ 320,00","R$ 3.006,47"
+07/2025,,,"R$ 900,70","R$ 175,24","R$ 1.006,24","R$ 1.000,00","R$ 320,00","R$ 3.402,18"
+08/2025,,,"R$ 605,81","R$ 175,24","R$ 613,79","R$ 1.000,00","R$ 320,00","R$ 2.714,84"`;
+
+// Renda mensal fixa. Altere este valor para refletir sua renda.
+const RENDA_MENSAL = 4185;
+
+// Função para parsear o CSV e limpar os dados
+const parseCSV = (csv) => {
+  const lines = csv.split('\n').filter(line => line.trim() !== '');
+  const headers = lines[0].split(',').map(header => header.trim());
+  
+  const parsedData = lines.slice(1).map(line => {
+    const values = line.split(',');
+    const item = {};
+    headers.forEach((header, i) => {
+      let value = values[i];
+      if (typeof value === 'string' && value.includes('R$')) {
+        // Remove 'R$', espaços, pontos e substitui vírgula por ponto para converter para float
+        value = parseFloat(value.replace(/R\$\s?/g, '').replace(/\./g, '').replace(',', '.'));
+      }
+      item[header] = value;
+    });
+    return item;
+  });
+
+  return parsedData;
+};
+
+// Componente para um card genérico
+const DashboardCard = ({ children, className = '' }) => (
+  <div className={`bg-zinc-800 text-white rounded-3xl p-6 shadow-xl ${className}`}>
+    {children}
+  </div>
+);
+
+// Componente para a seção de Estatísticas de Gastos
+const SalesStatisticsCard = ({ data, categories }) => {
+  const chartData = data.map(item => {
+    const month = new Date(item.Data).toLocaleString('pt-BR', { month: 'short' });
+    const total = categories.reduce((sum, category) => sum + (item[category] || 0), 0);
+    return {
+      name: month,
+      Total: total,
+    };
+  });
+
+  return (
+    <DashboardCard className="row-span-2 md:col-span-2 lg:col-span-1">
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h2 className="text-xl font-semibold text-gray-200">Estatísticas de Gastos</h2>
+          <span className="text-sm text-gray-400">Última atualização: hoje</span>
+        </div>
+        <span className="text-gray-400">Mensal</span>
+      </div>
+      <div className="flex justify-between items-center mb-4">
+        <div className="text-4xl font-bold text-gray-200">
+          <span className="text-gray-500 text-base">Gastos totais</span><br />
+          <span className="text-green-500">R$ {chartData[chartData.length - 1]?.Total.toFixed(2) || '0.00'}</span>
+        </div>
+      </div>
+      <ResponsiveContainer width="100%" height={200}>
+        <BarChart data={chartData}>
+          <XAxis dataKey="name" stroke="#4a5568" />
+          <YAxis stroke="#4a5568" />
+          <Tooltip 
+            formatter={(value) => `R$ ${value.toFixed(2)}`} 
+            wrapperStyle={{ background: '#2d3748', border: 'none', borderRadius: '8px' }}
+            labelStyle={{ color: '#a0aec0' }}
+          />
+          <Bar dataKey="Total" fill="#58B2DC" radius={[10, 10, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </DashboardCard>
+  );
+};
+
+// Componente para a seção de Saldo Atual
+const CurrentBalanceCard = ({ totalGasto, rendaMensal }) => {
+  const saldoRestante = rendaMensal - totalGasto;
+  const percentualGasto = (totalGasto / rendaMensal) * 100;
+  const data = [{
+    name: 'Gasto',
+    value: totalGasto,
+    fill: '#58B2DC',
+  }];
+
+  return (
+    <DashboardCard className="row-span-2">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold text-gray-200">Saldo Atual</h2>
+      </div>
+      <div className="flex justify-between items-center">
+        <div className="flex flex-col items-center">
+          <span className="text-lg font-bold text-gray-200">Gasto</span>
+          <span className="text-green-500 font-bold">{percentualGasto.toFixed(2)}%</span>
+        </div>
+        <div className="text-4xl font-bold text-gray-200">
+          <span className="text-gray-500 text-base">Disponível</span><br />
+          <span className="text-white">R$ {saldoRestante.toFixed(2)}</span>
+        </div>
+      </div>
+      <div className="mt-4 flex justify-center items-center relative">
+        <div className="absolute text-center">
+          <div className="text-lg font-bold text-gray-200">R$ {saldoRestante.toFixed(2)}</div>
+          <div className="text-sm text-gray-400">de R$ {rendaMensal.toFixed(2)}</div>
+        </div>
+        <ResponsiveContainer width="100%" height={200}>
+          <RadialBarChart 
+            innerRadius="60%" 
+            outerRadius="90%" 
+            barSize={20} 
+            data={data}
+            startAngle={180}
+            endAngle={0}
+          >
+            <RadialBar
+              minAngle={15}
+              label={{ position: 'insideStart', fill: '#fff', fontSize: 16 }}
+              background
+              clockWise
+              dataKey="value"
+            />
+          </RadialBarChart>
+        </ResponsiveContainer>
+      </div>
+    </DashboardCard>
+  );
+};
+
+// Componente para a seção de Análise e Dicas
+const FinancialAnalysisCard = ({ analysisData }) => {
+  const maiorGasto = analysisData.reduce((prev, current) => (
+    (prev.value > current.value) ? prev : current
+  ), { name: '', value: 0 });
+
+  return (
+    <DashboardCard>
+      <h2 className="text-xl font-semibold text-gray-200 mb-4">Análise Financeira</h2>
+      <ul className="space-y-4">
+        <li className="flex items-center">
+          <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+          <div>
+            <div className="text-lg text-gray-200">Seu maior gasto mensal é com <span className="font-bold">{maiorGasto.name}</span>.</div>
+            <div className="text-sm text-gray-400">Valor total: <span className="font-bold text-red-400">R$ {maiorGasto.value.toFixed(2)}</span></div>
+          </div>
+        </li>
+        <li className="flex items-center">
+          <div className="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
+          <div>
+            <div className="text-lg text-gray-200">Para economizar, você pode tentar reduzir os gastos nessa área.</div>
+            <div className="text-sm text-gray-400">Acompanhe seus gastos para manter o controle.</div>
+          </div>
+        </li>
+      </ul>
+    </DashboardCard>
+  );
+};
+
+// Componente principal do aplicativo
+function App() {
+  const [data, setData] = useState([]);
+  const [lastMonthTotals, setLastMonthTotals] = useState({});
+  const [totalLastMonth, setTotalLastMonth] = useState(0);
+
+  useEffect(() => {
+    const parsed = parseCSV(csvData);
+    setData(parsed);
+
+    if (parsed.length > 0) {
+      const lastMonthData = parsed[parsed.length - 1];
+      const categories = Object.keys(lastMonthData).filter(key => 
+        !['Data', 'Total', ''].includes(key) && lastMonthData[key] > 0
+      );
+      
+      const totals = categories.map(category => ({
+        name: category,
+        value: lastMonthData[category],
+        fill: '#9333ea', // Cor para o gráfico
+      }));
+
+      setLastMonthTotals(totals);
+      setTotalLastMonth(lastMonthData.Total);
+    }
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-zinc-900 text-white p-8 font-sans">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <SalesStatisticsCard 
+          data={data}
+          categories={['BTG', 'Inter', 'Itaú', 'Mercado Pago', 'Nubank', 'Apartamento', 'Faculdade']}
+        />
+        <CurrentBalanceCard 
+          totalGasto={totalLastMonth} 
+          rendaMensal={RENDA_MENSAL} 
+        />
+        <FinancialAnalysisCard analysisData={lastMonthTotals} />
+      </div>
+    </div>
+  );
+}
+
+export default App;
